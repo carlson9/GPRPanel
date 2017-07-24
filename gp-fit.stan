@@ -1,36 +1,67 @@
 data {
   int<lower=1> N;
-  vector[N] x;
+  int<lower=1> K;
+int<lower=1> M;
+  matrix[N,K] X;
+  matrix[N,M] X_corr;
   vector[N] y;
-}
-transformed data {
-  vector[N] mu;
-  for (i in 1:N) 
-    mu[i] <- 0;
+//  real<lower=0> rho;
+//  matrix[K,K] V;
+  matrix[K,K] B;
+  vector[K] nu;
 }
 parameters {
-  real<lower=0> eta_sq;
-  real<lower=0> rho_sq;
-  real<lower=0> sigma_sq;
+  real<lower=0> nug;
+  real<lower=0> sig_sq;
+//  real<lower=0> tau_sq;
+  vector<lower=0>[M] d1;
+  vector<lower=0>[M] d2;
+  vector[K] b;
+//  vector[K] b0;
+//  cholesky_factor_corr[K] Lcorr;
+//  cov_matrix[K] W;
+//  vector<lower=0>[K] sigma;
 }
 model {
   matrix[N,N] Sigma;
+  vector[N] mu;
+  matrix[N,K] Mu;
+  vector[M] d;
+//  W ~ inv_wishart(rho, V);
 
-  // off-diagonal elements
+  for(m in 1:M){
+    d1[m] ~ gamma(1,20);
+    d2[m] ~ gamma(10,10);
+    d[m] = .5*(d1[m] + d2[m]);
+  }
   for (i in 1:(N-1)) {
     for (j in (i+1):N) {
-      Sigma[i,j] <- eta_sq * exp(-rho_sq * pow(x[i] - x[j],2));
-      Sigma[j,i] <- Sigma[i,j];
+      vector[M] summand;
+      for(m in 1:M){
+        summand[m] = -pow(X_corr[i,m] - X_corr[j,m],2)/d[m];
+      }
+      Sigma[i,j] = exp(sum(summand));
+      Sigma[j,i] = Sigma[i,j];
     }
   }
+  for (i in 1:N){
+    for(k in 1:K){
+      Mu[i,k] = X[i,k]*b[k];
+    }
+    mu[i]=sum(Mu[i,1:K]);
+  }
+  for (i in 1:N)
+    Sigma[i,i] = 1 + nug; // + jitter
 
-  // diagonal elements
-  for (k in 1:N)
-    Sigma[k,k] <- eta_sq + sigma_sq; // + jitter
+  sig_sq ~ inv_gamma(1,1);
+//  tau_sq ~ inv_gamma(1,1);
+  nug ~ exponential(1);
 
-  eta_sq ~ cauchy(0,5);
-  rho_sq ~ cauchy(0,5);
-  sigma_sq ~ cauchy(0,5);
-
-  y ~ multi_normal(mu,Sigma);
+  b ~ normal(0,10);
+//  sigma ~ cauchy(0,5);
+//  Lcorr ~ lkj_corr_cholesky(1);
+//  b ~ multi_normal_cholesky(b0, sig_sq*tau_sq*diag_pre_multiply(sigma,Lcorr));
+//  b ~ multi_normal_cholesky(b0, tau_sq*diag_pre_multiply(sigma,Lcorr));
+//  b ~ multi_normal(b0, sig_sq*tau_sq*W);
+  y ~ multi_normal(mu,sig_sq*Sigma);
 }
