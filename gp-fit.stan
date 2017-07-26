@@ -7,8 +7,8 @@ int<lower=1> M;
   vector[N] y;
 //  real<lower=0> rho;
 //  matrix[K,K] V;
-  matrix[K,K] B;
-  vector[K] nu;
+//  matrix[K,K] B;
+//  vector[K] nu;
 }
 parameters {
   real<lower=0> nug;

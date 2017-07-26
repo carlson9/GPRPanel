@@ -9,8 +9,8 @@ matrix[N+zN,M] XZ_corr;
 //matrix[zN,K] Z;
 //matrix[zN,zM] Z_corr;
 vector[N] y;
-matrix[K,K] B;
-vector[K] nu;
+//matrix[K,K] B;
+//vector[K] nu;
 }
 parameters {
 real<lower=0> nug;
