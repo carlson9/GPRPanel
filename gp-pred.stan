@@ -3,14 +3,9 @@ int<lower=1> N;
 int<lower=1> zN;
 int<lower=1> K;
 int<lower=1> M;
-//int<lower=1> zM;
 matrix[N+zN,K] XZ;
 matrix[N+zN,M] XZ_corr;
-//matrix[zN,K] Z;
-//matrix[zN,zM] Z_corr;
 vector[N] y;
-//matrix[K,K] B;
-//vector[K] nu;
 }
 parameters {
 real<lower=0> nug;
@@ -21,18 +16,12 @@ vector[K] b;
 vector[zN] z;
 }
 model {
-//matrix[N+zN,N+zN] Sigma;
 matrix[N+zN,N+zN] Sigma;
 vector[N+zN] mu;
 matrix[N+zN,K] Mu;
 vector[M] d;
 
 vector[N+zN] yz;
-
-
-//matrix[zN,zN] zSigma;
-//vector[zN] zmu;
-//matrix[zN,K] zMu;
 
 for(m in 1:M){
 d1[m] ~ gamma(1,20);
@@ -58,30 +47,6 @@ mu[i]=sum(Mu[i,1:K]);
 for (i in 1:(N+zN))
 Sigma[i,i] = 1 + nug; // + jitter
 
-
-
-//for (i in 1:(zN-1)) {
-//  for (j in (i+1):zN) {
-//   vector[zM] zsummand;
-//  for(m in 1:zM){
-//      zsummand[m] = -pow(Z_corr[i,m] - Z_corr[j,m],2)/d[m];
-//    }
-//    zSigma[i,j] = exp(sum(zsummand));
-//    zSigma[j,i] = zSigma[i,j];
-//  }
-//}
-//for (i in 1:zN){
-//  for(k in 1:K){
-//    zMu[i,k] = Z[i,k]*b[k];
-//  }
-//  zmu[i]=sum(zMu[i,1:K]);
-//}
-//for (i in 1:zN)
-//  zSigma[i,i] = 1 + nug; // + jitter
-
-
-
-
 sig_sq ~ inv_gamma(1,1);
 nug ~ exponential(1);
 
@@ -91,8 +56,5 @@ for(n in 1:N) yz[n] = y[n];
 for(n in 1:zN) yz[N+n] = z[n];
 
 yz ~ multi_normal(mu,sig_sq*Sigma);
-
-//z ~ multi_normal(zmu,sig_sq*zSigma);
-
 
 }
