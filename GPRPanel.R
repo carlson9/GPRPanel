@@ -6,13 +6,13 @@ GPRPanel = function(form, group, time, data,
     names = as.character(attr(terms(form), 'variables'))[-1]
     y = data[,names[1]]
     X = data[,names[2:length(names)]]
+    X = apply(X, 2, scale)
     X = cbind(as.matrix(X), g)
     requireNamespace(rstan)
     if(n.cores == 'max') options(mc.cores = parellel::detectCores())
     else options(mc.cores = n.cores)
     if(auto_write) rstan_options(auto_write = TRUE)
     t = scale(data[,time])
-    X = apply(X, 2, scale)
     X_corr = as.matrix(cbind(X, t))
     N=dim(X)[1]
     M=dim(X_corr)[2]
