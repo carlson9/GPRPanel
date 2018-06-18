@@ -46,6 +46,6 @@ model {
 
     nug ~ exponential(1);
 
-    b ~ normal(0,10);
+    b ~ normal(0,3);
     y ~ multi_normal(mu,sig_sq*Sigma);
 }
