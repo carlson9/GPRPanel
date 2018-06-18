@@ -17,10 +17,10 @@ GPRPanel = function(form, group, time, data,
     N=dim(X)[1]
     M=dim(X_corr)[2]
     K=dim(X)[2]
-    if(loglik) fit = stan(file = 'gp-fit-multivariate-loglik.stan',
+    if(loglik) fit = rstan::stan(file = 'gp-fit-multivariate-loglik.stan',
             data = list(X=X, N=N, K=K, y=y, M=M, X_corr=X_corr),
             seed = seed, iter=iter, chains=chains, refresh = refresh)
-    else fit = stan(file = 'gp-fit.stan',
+    else fit = rstan::stan(file = 'gp-fit.stan',
             data = list(X=X, N=N, K=K, y=y, M=M, X_corr=X_corr),
             seed = seed, iter=iter, chains=chains, refresh = refresh)
     return(fit)
