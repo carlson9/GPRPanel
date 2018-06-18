@@ -3,8 +3,6 @@ data {
   int<lower=1> K;
   matrix[N,K] X;
   vector[N] y;
-//  real<lower=0> rho;
-//  matrix[K,K] V;
   matrix[K,K] B;
   vector[K] nu;
 }
@@ -24,7 +22,6 @@ model {
   vector[N] mu;
   matrix[N,K] Mu;
   vector[K] d;
-//  W ~ inv_wishart(rho, V);
 
   for(k in 1:K){
     d1[k] ~ gamma(1,20);
