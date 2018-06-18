@@ -17,8 +17,8 @@ GPRPanelPred = function(form, group, time, data, Z, Z_corr,
     N=dim(X)[1]
     M=dim(X_corr)[2]
     K=dim(X)[2]
-    Z = apply(Z, 2, scale)
-    Z_corr = cbind(Z, Z_corr[, (dim(Z)[1] + 1):dim(Z_corr)[1])
+    Z[,(1:(dim(Z)[2] - dim(g)[2]))] = apply(Z[,(1:(dim(Z)[2] - dim(g)[2]))], 2, scale)
+    Z_corr = cbind(Z, scale(Z_corr[, dim(Z_corr)[2]))
     zN = dim(Z)[2]
     fit = rstan::stan(file = 'gp-pred.stan',
             data = list(XZ=rbind(X,Z), N=N, zN=zN, K=K, y=y, M=M, XZ_corr=rbind(X_corr,Z_corr)),
