@@ -1,5 +1,5 @@
-GPRPanel = function(form, group, time, data,
-        loglik = FALSE, seed = 1919,
+GPRPanelPred = function(form, group, time, data, Z, Z_corr,
+        seed = 1919,
         cores = 'max', n.cores = NULL, auto_write = TRUE,
         iter = 1000, chains = 4, refresh = 100){
     g = model.matrix(~ group - 1, data)
@@ -17,11 +17,11 @@ GPRPanel = function(form, group, time, data,
     N=dim(X)[1]
     M=dim(X_corr)[2]
     K=dim(X)[2]
-    if(loglik) fit = stan(file = 'gp-fit-multivariate-loglik.stan',
-            data = list(X=X, N=N, K=K, y=y, M=M, X_corr=X_corr),
-            seed = seed, iter=iter, chains=chains, refresh = refresh)
-    else fit = stan(file = 'gp-fit.stan',
-            data = list(X=X, N=N, K=K, y=y, M=M, X_corr=X_corr),
+    Z = apply(Z, 2, scale)
+    Z_corr = apply(Z_corr, 2, scale)
+    zN = dim(Z)[2]
+    fit = stan(file = 'gp-pred.stan',
+            data = list(XZ=rbind(X,Z), N=N, zN=zN, K=K, y=y, M=M, XZ_corr=rbind(X_corr,Z_corr)),
             seed = seed, iter=iter, chains=chains, refresh = refresh)
     return(fit)
 }
