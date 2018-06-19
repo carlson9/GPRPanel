@@ -50,7 +50,7 @@ Sigma[i,i] = 1 + nug; // + jitter
 sig_sq ~ inv_gamma(1,1);
 nug ~ exponential(1);
 
-b ~ normal(0,10);
+b ~ normal(0,3);
 
 for(n in 1:N) yz[n] = y[n];
 for(n in 1:zN) yz[N+n] = z[n];
