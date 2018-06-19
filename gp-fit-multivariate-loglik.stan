@@ -44,10 +44,25 @@ model {
     sig_sq ~ inv_gamma(1,1);
     nug ~ exponential(1);
 
-    b ~ normal(0,10);
+    b ~ normal(0,3);
     y ~ multi_normal(mu,sig_sq*Sigma);
 }
 generated quantities {
-   vector[N] log_lik;
-   log_lik[n] = multi_normal_lpdf(y | X*b, sig_sq*Sigma);
+   real log_lik;
+   matrix[N,N] Sigma;
+   vector[M] d;
+   d = .5*(d1 + d2);
+   for (i in 1:(N-1)) {
+        for (j in (i+1):N) {
+            vector[M] summand;
+            for(m in 1:M){
+                summand[m] = -pow(X_corr[i,m] - X_corr[j,m],2)/d[m];
+            }
+            Sigma[i,j] = exp(sum(summand));
+            Sigma[j,i] = Sigma[i,j];
+        }
+    }
+    for (i in 1:N) Sigma[i,i] = 1 + nug; // + jitter
+
+    log_lik = multi_normal_lpdf(y | X*b, sig_sq*Sigma);
 }
