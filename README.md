@@ -1,4 +1,4 @@
-# gpRtscs package
+# gpRtscs
 
 ## GPRPanel
 Gaussian Process Regression for Panel Data
