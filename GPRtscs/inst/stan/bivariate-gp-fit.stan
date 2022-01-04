@@ -110,10 +110,10 @@ for(n in 1:N)
   mu[n] = [ystar1[n], ystar2[n]];
 
 L_Sigma = diag_post_multiply(L_Omega, L_sigma);
-  
+
 L_Omega ~ lkj_corr_cholesky(4);
 L_sigma ~ cauchy(0, 2.5);
-  
+
 y ~ multi_normal_cholesky(mu, L_Sigma);
 
 

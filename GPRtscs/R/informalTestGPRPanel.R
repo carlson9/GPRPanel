@@ -1,5 +1,5 @@
-setwd('GPRPanel')
-source('GPRPanel.R')
+setwd('GPRtscs')
+source('R/GPRPanel.R')
 library(rstan)
 set.seed(99)
 x1=rnorm(15*15)
@@ -14,7 +14,7 @@ summary(tt2)$summary
 
 #### prediction ####
 
-source('GPRPanelPred.R')
+source('R/GPRPanelPred.R')
 set.seed(91)
 x1=rnorm(15*15)
 x2=rnorm(15*15)
@@ -26,3 +26,4 @@ Z_corr = cbind(Z, z_time)
 tt3 = GPRPanelPred(y~x1+x2, 'group', 'time', data, Z=Z, Z_corr=Z_corr, iter=500, seed=7867)
 cor(1+.5*Z[,1]-.95*Z[,2],
     summary(tt3)$summary[paste0('z[',1:15,']'),'mean'])
+
