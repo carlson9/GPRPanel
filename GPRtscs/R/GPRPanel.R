@@ -13,15 +13,16 @@
 #' @param chains A positive integer specifying the number of Markov chains. The default is 4
 #' @param refresh Controls how often the progress of the sampling is reported
 #' @param ... Additional arguments that are passed to sampling in rstan
-#' 
+#'
 #' @details
-#' We need details
-#' 
-#' 
+#' GPRPAnel function sets run-time options used to build rstanmodel. Then returns a rstan fit object through sampling.
+#' Set loglik parameter "TRUE" to estimate log-likelihood.
+#' If you are working locally on a multicore machine and have plenty of RAM to estimate your model in parallel, use the default "max" setting for n.cores.
+#'
 #' @return An rstan fit object
 #' @author David Carlson \email{carlson.david@@wustl.edu} and Dilara Karaduman \email{karadumandilara3@@gmail.com}
 #' @examples
-#' 
+#'
 #' \donttest{
 #' we need an example
 #' }
